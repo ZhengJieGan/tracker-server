@@ -4,11 +4,12 @@ class PostsController < ApplicationController
 
   # To create a new model
   # bin/rails g scaffold Post title:string body:text
+  # bin/rails g scaffold Comment name:string message:string post:belongs_to
 
   # GET /posts or /posts.json
   def index
     @posts = Post.all
-    render json: {data: @posts }, headers: { 'Access-Control-Allow-Origin' => '*' }
+    render json: @posts.as_json(include: :comments), headers: { 'Access-Control-Allow-Origin' => '*' }
   end
 
   # GET /posts/1 or /posts/1.json
@@ -27,11 +28,12 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
+    @posts = Post.all
 
     respond_to do |format|
       if @post.save
         format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
-        format.json { render json: Post.all, status: :created, location: @post }
+        format.json { render json: @posts.as_json(include: :comments), status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -41,10 +43,11 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
+    @posts = Post.all
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
-        format.json { render json: Post.all, status: :ok, location: @post }
+        format.json { render json: @posts.as_json(include: :comments), status: :ok, location: @post }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -55,10 +58,11 @@ class PostsController < ApplicationController
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy
+    @posts = Post.all
 
     respond_to do |format|
       format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
-      format.json { render json: Post.all }
+      format.json { render json: @posts.as_json(include: :comments) }
     end
   end
   private
