@@ -8,7 +8,10 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    user_id = session[:user_id]
+    # puts user_id
+    @posts = Post.where(user_id: user_id)
+    puts @posts.inspect
     render json: @posts.as_json(include: :comments), headers: { 'Access-Control-Allow-Origin' => '*' }
   end
 
@@ -28,7 +31,7 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    @posts = Post.all
+    @posts = Post.where(user_id: @post.user_id )
 
     respond_to do |format|
       if @post.save
@@ -58,7 +61,7 @@ class PostsController < ApplicationController
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy
-    @posts = Post.all
+    @posts = Post.where(user_id: @post.user_id )
 
     respond_to do |format|
       format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
@@ -73,6 +76,12 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :body)
+      params.require(:post).permit(:title, :body, :user_id)
+    end
+
+    def current_user
+      # This is where you would retrieve the current user object from your authentication system.
+      # For example:
+      User.find_by(_id: session[:user_id])
     end
 end

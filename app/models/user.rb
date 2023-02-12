@@ -5,4 +5,6 @@ class User
     field :email, type: String
     field :password_digest, type: String
     has_secure_password
+
+    has_many :posts, dependent: :destroy
 end
