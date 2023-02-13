@@ -33,6 +33,12 @@ gem 'rack-cors'
 # bcrypt
 gem 'bcrypt', '~> 3.1.7'
 
+gem "will_paginate", "~> 3.0.4" 
+
+gem 'kaminari-mongoid'
+
+gem 'kaminari'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 

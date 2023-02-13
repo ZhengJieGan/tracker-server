@@ -1,18 +1,18 @@
 class PostsController < ApplicationController
+  include Kaminari::PageScopeMethods
   before_action :set_post, only: %i[ show edit update destroy ]
   protect_from_forgery unless: -> { request.format.json? }
-
+  
   # To create a new model
   # bin/rails g scaffold Post title:string body:text
   # bin/rails g scaffold Comment name:string message:string post:belongs_to
 
   # GET /posts or /posts.json
   def index
-    user_id = session[:user_id]
-    # puts user_id
-    @posts = Post.where(user_id: user_id)
-    puts @posts.inspect
-    render json: @posts.as_json(include: :comments), headers: { 'Access-Control-Allow-Origin' => '*' }
+    page = params[:page] || 1
+    @posts = Post.where(user_id: $user_id._id).page(params[:page].to_i).per(5)
+    @total_posts =  @posts.count
+    render json: { posts: @posts.as_json(include: :comments), total_posts: @total_posts }, headers: { 'Access-Control-Allow-Origin' => '*' }
   end
 
   # GET /posts/1 or /posts/1.json
