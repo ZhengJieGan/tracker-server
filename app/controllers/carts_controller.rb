@@ -54,7 +54,7 @@ class CartsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to carts_url, notice: "Cart was successfully destroyed." }
-      format.json { head :no_content }
+      format.json { render json: @cart }
     end
   end
 
