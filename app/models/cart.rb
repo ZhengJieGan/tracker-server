@@ -4,4 +4,6 @@ class Cart
   field :item_id, type: String
   field :quantity, type: Integer
   belongs_to :user
+
+  has_many :item, dependent: :destroy
 end
